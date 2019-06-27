@@ -26,7 +26,7 @@ namespace Tavisca.Bootcamp.LanguageBasics.Exercise1
                 new[] { 93, 96, 13, 95, 98, 18, 59, 49, 86 }, 
                 new[] { "f", "Pt", "PT", "fT", "Cp", "C", "t", "", "cCp", "ttp", "PCFt", "P", "pCt", "cP", "Pc" }, 
                 new[] { 2, 6, 6, 2, 4, 4, 5, 0, 5, 5, 6, 6, 3, 5, 6 });
-            Console.ReadKey(true);
+                Console.ReadKey(true);
         }
 
         private static void Test(int[] protein, int[] carbs, int[] fat, string[] dietPlans, int[] expected)
@@ -41,13 +41,7 @@ namespace Tavisca.Bootcamp.LanguageBasics.Exercise1
 
         public static int[] SelectMeals(int[] protein, int[] carbs, int[] fat, string[] dietPlans)
         {
-            
-            int[] calorie = new int[protein.Length];
-
-            for(int i = 0; i < protein.Length; i++){
-                calorie[i] = 5 * (protein[i] + carbs[i]) + 9 * fat[i];
-            }
-
+            int[] calorie = calculateCalorie(protein,fat,carbs);
             int[] solution = new int[dietPlans.Length];            
 
             for(int i = 0; i < dietPlans.Length; i++){
@@ -61,51 +55,60 @@ namespace Tavisca.Bootcamp.LanguageBasics.Exercise1
                 }
 
                 for(int k = 0; k < protein.Length; k++)
-                {
                     possibleIndexes.Add(k);
-                }
+                
 
-                foreach(char ch in dietPlan){                    
-                    if(ch.Equals('p')){
-                        int min = getMinimumValue(protein,possibleIndexes);
-                        // Console.WriteLine($"Debugging ===== >p {min}");
-                        possibleIndexes = getMinimumIndexes(protein,possibleIndexes,min);
-                    }
-                    else if(ch.Equals('P'))
-                    {
-                        int max = getMaximumValue(protein,possibleIndexes);
-                        // Console.WriteLine($"Debugging ===== >P {max}");
-                        possibleIndexes = getMinimumIndexes(protein,possibleIndexes,max);
-                    }
-                    else if(ch.Equals('c')){
-                        int min = getMinimumValue(carbs,possibleIndexes);
-                        // Console.WriteLine($"Debugging ===== >c {min}");
-                        possibleIndexes = getMinimumIndexes(carbs,possibleIndexes,min);
-                    }
-                    else if(ch.Equals('C')){
-                        int max = getMaximumValue(carbs,possibleIndexes);
-                        // Console.WriteLine($"Debugging ===== >C {max}");
-                        possibleIndexes = getMinimumIndexes(carbs,possibleIndexes,max);
-                    }
-                    else if(ch.Equals('f')){
-                        int min = getMinimumValue(fat,possibleIndexes);
-                        // Console.WriteLine($"Debugging ===== >f {min}");
-                        possibleIndexes = getMinimumIndexes(fat,possibleIndexes,min);
-                    }
-                    else if(ch.Equals('F')){
-                        int max = getMaximumValue(fat,possibleIndexes);
-                        // Console.WriteLine($"Debugging ===== >F {max}");
-                        possibleIndexes = getMinimumIndexes(fat,possibleIndexes,max);
-                    }
-                    else if(ch.Equals('t')){
-                        int min = getMinimumValue(calorie,possibleIndexes);
-                        // Console.WriteLine($"Debugging ===== >t {min}");
-                        possibleIndexes = getMinimumIndexes(calorie,possibleIndexes,min);
-                    }
-                    else if(ch.Equals('T')){
-                        int max = getMaximumValue(calorie,possibleIndexes);
-                        // Console.WriteLine($"Debugging ===== >T {max}");
-                        possibleIndexes = getMinimumIndexes(calorie,possibleIndexes,max);
+                foreach(char ch in dietPlan){
+                    switch(ch){
+
+                        case 'p': 
+                        {
+                            int min = getMinimumValue(protein,possibleIndexes);
+                            possibleIndexes = getMinimumIndexes(protein,possibleIndexes,min);
+                            break;
+                        }
+                        case 'P':
+                        {
+                            int max = getMaximumValue(protein,possibleIndexes);
+                            possibleIndexes = getMinimumIndexes(protein,possibleIndexes,max);
+                            break;
+                        }
+                        case 'c':
+                        {
+                            int min = getMinimumValue(carbs,possibleIndexes);
+                            possibleIndexes = getMinimumIndexes(carbs,possibleIndexes,min);
+                            break;
+                        }
+                        case 'C':
+                        {
+                            int max = getMaximumValue(carbs,possibleIndexes);
+                            possibleIndexes = getMinimumIndexes(carbs,possibleIndexes,max);
+                            break;
+                        }
+                        case 'f':
+                        {
+                            int min = getMinimumValue(fat,possibleIndexes);
+                            possibleIndexes = getMinimumIndexes(fat,possibleIndexes,min);
+                            break;
+                        }
+                        case 'F':
+                        {
+                            int max = getMaximumValue(fat,possibleIndexes);
+                            possibleIndexes = getMinimumIndexes(fat,possibleIndexes,max);
+                            break;
+                        }
+                        case 't':
+                        {
+                            int min = getMinimumValue(calorie,possibleIndexes);
+                            possibleIndexes = getMinimumIndexes(calorie,possibleIndexes,min);
+                            break;
+                        }
+                        case 'T':
+                        {
+                            int max = getMaximumValue(calorie,possibleIndexes);
+                            possibleIndexes = getMinimumIndexes(calorie,possibleIndexes,max);
+                            break;
+                        }
                     }
                 }
 
@@ -113,16 +116,7 @@ namespace Tavisca.Bootcamp.LanguageBasics.Exercise1
 
 
             }
-            // Console.WriteLine("==========================");
-
-            // for(int j = 0; j < solution.Length ;j++){
-            //     Console.Write(solution[j]+" ");
-            // }
-
-
-            // Console.WriteLine("\n"+"==========================");
             return solution;
-            throw new NotImplementedException();
         
         }
 
@@ -158,6 +152,14 @@ namespace Tavisca.Bootcamp.LanguageBasics.Exercise1
                 }
             }
             return max;
+        }
+
+        public static int[] calculateCalorie(int[] protein,int[] fat,int[] carbs){
+            int[] calorie = new int[protein.Length];
+            for(int i = 0; i < protein.Length; i++){
+                calorie[i] = 5 * (protein[i] + carbs[i]) + 9 * fat[i];
+            }
+            return calorie;
         }
     }
 
